@@ -69,7 +69,7 @@ public Task VerifyCsvStream()
     return Verify(stream, "csv");
 }
 ```
-<sup><a href='/src/Tests/Samples.cs#L12-L21' title='Snippet source file'>snippet source</a> | <a href='#snippet-VerifyCsvStream' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Tests/Samples.cs#L28-L37' title='Snippet source file'>snippet source</a> | <a href='#snippet-VerifyCsvStream' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 

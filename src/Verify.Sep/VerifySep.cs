@@ -23,38 +23,59 @@ public static partial class VerifySep
     {
         using var source = Sep.Reader().FromText(builder.ToString());
         using var target = source.Spec.Writer().ToText();
+        var colNames = source.Header.ColNames;
+
         foreach (var sourceRow in source)
         {
             using var targetRow = target.NewRow();
-            foreach (var colName in source.Header.ColNames)
+            foreach (var colName in colNames)
             {
                 var sourceCell = sourceRow[colName];
                 targetRow[colName].Set(sourceCell.Span);
             }
         }
+
         target.Flush();
 
         builder.Clear();
         builder.Append(target);
     }
 
-    public static void PagesToInclude(this VerifySettings settings, int count) =>
-        settings.Context["VerifyDocNetPagesToInclude"] = count;
+    public static void ScrubCsvColumns(this VerifySettings settings, params string[] columns) =>
+        settings.Context["VerifySepScrubColumns"] = columns;
 
-
-    public static SettingsTask PagesToInclude(this SettingsTask settings, int count)
+    public static SettingsTask ScrubCsvColumns(this SettingsTask settings, params string[] columns)
     {
-        settings.CurrentSettings.PagesToInclude(count);
+        settings.CurrentSettings.ScrubCsvColumns(columns);
         return settings;
     }
 
-    static int GetPagesToInclude(this IReadOnlyDictionary<string, object> settings, int count)
+    static string[]? GetScrubCsvColumns(this IReadOnlyDictionary<string, object> settings)
     {
-        if (settings.TryGetValue("VerifyDocNetPagesToInclude", out var value))
+        if (settings.TryGetValue("VerifySepScrubColumns", out var value))
         {
-            return Math.Min(count, (int)value);
+            return (string[]) value;
         }
 
-        return count;
+        return null;
+    }
+
+    public static void IgnoreCsvColumns(this VerifySettings settings, params string[] columns) =>
+        settings.Context["VerifySepIgnoreColumns"] = columns;
+
+    public static SettingsTask IgnoreCsvColumns(this SettingsTask settings, params string[] columns)
+    {
+        settings.CurrentSettings.IgnoreCsvColumns(columns);
+        return settings;
+    }
+
+    static string[]? GetIgnoreCsvColumns(this IReadOnlyDictionary<string, object> settings)
+    {
+        if (settings.TryGetValue("VerifySepIgnoreColumns", out var value))
+        {
+            return (string[]) value;
+        }
+
+        return null;
     }
 }
