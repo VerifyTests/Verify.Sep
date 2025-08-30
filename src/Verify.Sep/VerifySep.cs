@@ -30,8 +30,8 @@ public static partial class VerifySep
             for (var column = 0; column < readRow.ColCount; column++)
             {
                 var sourceCell = sourceRow[column];
-                var colName = (char)('A' + column);
-                targetRow[colName.ToString()].Set(sourceCell.Span);
+                var headerColName = reader.Header.ColNames[column];
+                targetRow[headerColName].Set(sourceCell.Span);
             }
         }
 
