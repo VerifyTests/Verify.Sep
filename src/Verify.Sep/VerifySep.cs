@@ -1,8 +1,6 @@
-using nietras.SeparatedValues;
-
 namespace VerifyTests;
 
-public static partial class VerifySep
+public static class VerifySep
 {
     public static bool Initialized { get; private set; }
 
@@ -19,11 +17,15 @@ public static partial class VerifySep
         VerifierSettings.AddScrubber("csv", Scrub);
     }
 
-    static void Scrub(StringBuilder builder, Counter arg2)
+    static void Scrub(StringBuilder builder, Counter counter, IReadOnlyDictionary<string, object> context)
     {
+        var ignoreColumns = context.GetIgnoreCsvColumns();
+        var scrubColumns = context.GetScrubCsvColumns();
         using var source = Sep.Reader().FromText(builder.ToString());
         using var target = source.Spec.Writer().ToText();
+
         var colNames = source.Header.ColNames;
+        colNames = colNames.Except(ignoreColumns).ToArray();
 
         foreach (var sourceRow in source)
         {
@@ -31,7 +33,15 @@ public static partial class VerifySep
             foreach (var colName in colNames)
             {
                 var sourceCell = sourceRow[colName];
-                targetRow[colName].Set(sourceCell.Span);
+                var targetCell = targetRow[colName];
+                if (scrubColumns.Contains(colName))
+                {
+                    targetCell.Set("Scrubbed");
+                }
+                else
+                {
+                    targetCell.Set(sourceCell.Span);
+                }
             }
         }
 
@@ -50,14 +60,14 @@ public static partial class VerifySep
         return settings;
     }
 
-    static string[]? GetScrubCsvColumns(this IReadOnlyDictionary<string, object> settings)
+    static string[] GetScrubCsvColumns(this IReadOnlyDictionary<string, object> settings)
     {
         if (settings.TryGetValue("VerifySepScrubColumns", out var value))
         {
             return (string[]) value;
         }
 
-        return null;
+        return [];
     }
 
     public static void IgnoreCsvColumns(this VerifySettings settings, params string[] columns) =>
@@ -69,13 +79,13 @@ public static partial class VerifySep
         return settings;
     }
 
-    static string[]? GetIgnoreCsvColumns(this IReadOnlyDictionary<string, object> settings)
+    static string[] GetIgnoreCsvColumns(this IReadOnlyDictionary<string, object> settings)
     {
         if (settings.TryGetValue("VerifySepIgnoreColumns", out var value))
         {
             return (string[]) value;
         }
 
-        return null;
+        return [];
     }
 }
