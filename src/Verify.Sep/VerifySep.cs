@@ -21,20 +21,21 @@ public static partial class VerifySep
 
     static void Scrub(StringBuilder builder, Counter arg2)
     {
-        using var reader = Sep.Reader().FromText(builder.ToString());
-        using var writer = reader.Spec.Writer().ToText();
-        foreach (var sourceRow in reader)
+        using var source = Sep.Reader().FromText(builder.ToString());
+        using var target = source.Spec.Writer().ToText();
+        foreach (var sourceRow in source)
         {
-            using var targetRow = writer.NewRow();
-            foreach (var colName in reader.Header.ColNames)
+            using var targetRow = target.NewRow();
+            foreach (var colName in source.Header.ColNames)
             {
                 var sourceCell = sourceRow[colName];
                 targetRow[colName].Set(sourceCell.Span);
             }
         }
+        target.Flush();
 
         builder.Clear();
-        builder.Append(writer);
+        builder.Append(target);
     }
 
     public static void PagesToInclude(this VerifySettings settings, int count) =>
