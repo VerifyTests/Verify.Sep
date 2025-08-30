@@ -26,12 +26,10 @@ public static partial class VerifySep
         foreach (var sourceRow in reader)
         {
             using var targetRow = writer.NewRow();
-            var readRow = reader.Current;
-            for (var column = 0; column < readRow.ColCount; column++)
+            foreach (var colName in reader.Header.ColNames)
             {
-                var sourceCell = sourceRow[column];
-                var headerColName = reader.Header.ColNames[column];
-                targetRow[headerColName].Set(sourceCell.Span);
+                var sourceCell = sourceRow[colName];
+                targetRow[colName].Set(sourceCell.Span);
             }
         }
 
