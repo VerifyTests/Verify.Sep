@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <NoWarn>CS1591;CS0649;NU1608;NU1109</NoWarn>
+    <Version>3.1.7</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <LangVersion>preview</LangVersion>
+    <SignAssembly>false</SignAssembly>
+    <PackageTags>DocNet, pdf, Verify</PackageTags>
+    <Description>Extends Verify (https://github.com/VerifyTests/Verify) to allow verification via DocNet.</Description>
+    <ResolveAssemblyReferencesSilent>true</ResolveAssemblyReferencesSilent>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+  </PropertyGroup>
+</Project>
