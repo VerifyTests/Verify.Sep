@@ -42,11 +42,7 @@ public static partial class VerifySep
 
     static IEnumerable<(string column, Func<string, string> translate)> GetColumns(SepReader reader, IReadOnlyDictionary<string, object> context)
     {
-        Func<string, Func<string, string?>?>? translateBuilder = null;
-        if (context.TryGetValue("VerifySepCsvTranslate", out var builderValue))
-        {
-            translateBuilder = (Func<string, Func<string, string>?>) builderValue;
-        }
+        var translateBuilder = GetTranslate(context);
 
         var ignoreColumns = context.GetIgnoreCsvColumns();
         var scrubColumns = context.GetScrubCsvColumns();
@@ -60,6 +56,7 @@ public static partial class VerifySep
             yield return (column, handle);
         }
     }
+
 
     static Func<string, string> translateScrubbed = _ => "Scrubbed";
 
