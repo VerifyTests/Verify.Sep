@@ -19,36 +19,56 @@ public static class VerifySep
 
     static void Scrub(StringBuilder builder, Counter counter, IReadOnlyDictionary<string, object> context)
     {
-        var ignoreColumns = context.GetIgnoreCsvColumns();
-        var scrubColumns = context.GetScrubCsvColumns();
         using var source = Sep.Reader().FromText(builder.ToString());
         using var target = source.Spec.Writer().ToText();
-
-        var colNames = source.Header.ColNames;
-        colNames = colNames.Except(ignoreColumns).ToArray();
-
+        var columns = GetColumns(source,context).ToList();
         foreach (var sourceRow in source)
         {
             using var targetRow = target.NewRow();
-            foreach (var colName in colNames)
+            foreach (var (column, translate) in columns)
             {
-                var sourceCell = sourceRow[colName];
-                var targetCell = targetRow[colName];
-                if (scrubColumns.Contains(colName))
-                {
-                    targetCell.Set("Scrubbed");
-                }
-                else
-                {
-                    targetCell.Set(sourceCell.Span);
-                }
+                var sourceCell = sourceRow[column];
+                var targetCell = targetRow[column];
+                targetCell.Set(translate(sourceCell.Span.ToString()));
             }
         }
 
         target.Flush();
 
         builder.Clear();
+
         builder.Append(target);
+    }
+    static Func<string, string> translateScrubbed = _ => "Scrubbed";
+    static IEnumerable<(string column, Func<string, string> translate)> GetColumns(SepReader reader, IReadOnlyDictionary<string, object> context)
+    {
+        Func<string, Func<string, string?>?>? translateBuilder = null;
+        if (context.TryGetValue("VerifySepCsvTranslate", out var builderValue))
+        {
+            translateBuilder = (Func<string, Func<string, string>?>) builderValue;
+        }
+
+        var ignoreColumns = context.GetIgnoreCsvColumns();
+        var scrubColumns = context.GetScrubCsvColumns();
+        var columns = reader.Header.ColNames;
+        columns = columns.Except(ignoreColumns).ToArray();
+        foreach (var column in columns)
+        {
+            if (scrubColumns.Contains(column))
+            {
+                yield return (column, translateScrubbed);
+                continue;
+            }
+
+            var translate = translateBuilder?.Invoke(column);
+            if (translate != null)
+            {
+                yield return (column, _ => translate(_) ?? "null");
+                continue;
+            }
+
+            yield return (column, _ => _);
+        }
     }
 
     public static void ScrubCsvColumns(this VerifySettings settings, params string[] columns) =>
