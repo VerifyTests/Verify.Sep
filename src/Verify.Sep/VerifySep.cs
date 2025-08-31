@@ -1,6 +1,6 @@
 namespace VerifyTests;
 
-public static class VerifySep
+public static partial class VerifySep
 {
     public static bool Initialized { get; private set; }
 
@@ -14,14 +14,14 @@ public static class VerifySep
         Initialized = true;
 
         InnerVerifier.ThrowIfVerifyHasBeenRun();
-        VerifierSettings.AddScrubber("csv", Scrub);
+        VerifierSettings.AddScrubber("csv", Handle);
     }
 
-    static void Scrub(StringBuilder builder, Counter counter, IReadOnlyDictionary<string, object> context)
+    static void Handle(StringBuilder builder, Counter counter, IReadOnlyDictionary<string, object> context)
     {
         using var source = Sep.Reader().FromText(builder.ToString());
         using var target = source.Spec.Writer().ToText();
-        var columns = GetColumns(source,context).ToList();
+        var columns = GetColumns(source, context).ToList();
         foreach (var sourceRow in source)
         {
             using var targetRow = target.NewRow();
@@ -39,6 +39,7 @@ public static class VerifySep
 
         builder.Append(target);
     }
+
     static IEnumerable<(string column, Func<string, string> translate)> GetColumns(SepReader reader, IReadOnlyDictionary<string, object> context)
     {
         Func<string, Func<string, string?>?>? translateBuilder = null;
@@ -62,6 +63,8 @@ public static class VerifySep
 
     static Func<string, string> translateScrubbed = _ => "Scrubbed";
 
+    static Func<string, string> defaultHandle = _ => _;
+
     static Func<string, string> GetHandle(string[] scrubColumns, string column, Func<string, Func<string, string?>?>? translateBuilder)
     {
         if (scrubColumns.Contains(column))
@@ -75,44 +78,6 @@ public static class VerifySep
             return _ => translate(_) ?? "null";
         }
 
-        return _ => _;
-    }
-
-    public static void ScrubCsvColumns(this VerifySettings settings, params string[] columns) =>
-        settings.Context["VerifySepScrubColumns"] = columns;
-
-    public static SettingsTask ScrubCsvColumns(this SettingsTask settings, params string[] columns)
-    {
-        settings.CurrentSettings.ScrubCsvColumns(columns);
-        return settings;
-    }
-
-    static string[] GetScrubCsvColumns(this IReadOnlyDictionary<string, object> settings)
-    {
-        if (settings.TryGetValue("VerifySepScrubColumns", out var value))
-        {
-            return (string[]) value;
-        }
-
-        return [];
-    }
-
-    public static void IgnoreCsvColumns(this VerifySettings settings, params string[] columns) =>
-        settings.Context["VerifySepIgnoreColumns"] = columns;
-
-    public static SettingsTask IgnoreCsvColumns(this SettingsTask settings, params string[] columns)
-    {
-        settings.CurrentSettings.IgnoreCsvColumns(columns);
-        return settings;
-    }
-
-    static string[] GetIgnoreCsvColumns(this IReadOnlyDictionary<string, object> settings)
-    {
-        if (settings.TryGetValue("VerifySepIgnoreColumns", out var value))
-        {
-            return (string[]) value;
-        }
-
-        return [];
+        return defaultHandle;
     }
 }
