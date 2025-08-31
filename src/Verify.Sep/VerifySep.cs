@@ -39,7 +39,6 @@ public static class VerifySep
 
         builder.Append(target);
     }
-    static Func<string, string> translateScrubbed = _ => "Scrubbed";
     static IEnumerable<(string column, Func<string, string> translate)> GetColumns(SepReader reader, IReadOnlyDictionary<string, object> context)
     {
         Func<string, Func<string, string?>?>? translateBuilder = null;
@@ -50,25 +49,33 @@ public static class VerifySep
 
         var ignoreColumns = context.GetIgnoreCsvColumns();
         var scrubColumns = context.GetScrubCsvColumns();
+
         var columns = reader.Header.ColNames;
-        columns = columns.Except(ignoreColumns).ToArray();
-        foreach (var column in columns)
+
+        foreach (var column in columns.Except(ignoreColumns))
         {
-            if (scrubColumns.Contains(column))
-            {
-                yield return (column, translateScrubbed);
-                continue;
-            }
+            var handle = GetHandle(scrubColumns, column, translateBuilder);
 
-            var translate = translateBuilder?.Invoke(column);
-            if (translate != null)
-            {
-                yield return (column, _ => translate(_) ?? "null");
-                continue;
-            }
-
-            yield return (column, _ => _);
+            yield return (column, handle);
         }
+    }
+
+    static Func<string, string> translateScrubbed = _ => "Scrubbed";
+
+    static Func<string, string> GetHandle(string[] scrubColumns, string column, Func<string, Func<string, string?>?>? translateBuilder)
+    {
+        if (scrubColumns.Contains(column))
+        {
+            return translateScrubbed;
+        }
+
+        var translate = translateBuilder?.Invoke(column);
+        if (translate != null)
+        {
+            return _ => translate(_) ?? "null";
+        }
+
+        return _ => _;
     }
 
     public static void ScrubCsvColumns(this VerifySettings settings, params string[] columns) =>
