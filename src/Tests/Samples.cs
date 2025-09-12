@@ -8,6 +8,7 @@ public class Samples
         VerifyFile("sample.csv");
 
     #endregion
+
     #region IgnoreColumns
 
     [Test]
@@ -16,6 +17,7 @@ public class Samples
             .IgnoreCsvColumns("Customer Id");
 
     #endregion
+
     #region ScrubColumns
 
     [Test]
