@@ -57,8 +57,7 @@ public static partial class VerifySep
         }
     }
 
-
-    static Func<string, string> translateScrubbed = _ => "Scrubbed";
+    static Func<string, string> translateScrubbed = _ => "{Scrubbed}";
 
     static Func<string, string> defaultHandle = _ => _;
 
@@ -70,11 +69,11 @@ public static partial class VerifySep
         }
 
         var translate = translateBuilder?.Invoke(column);
-        if (translate != null)
+        if (translate == null)
         {
-            return _ => translate(_) ?? "null";
+            return defaultHandle;
         }
 
-        return defaultHandle;
+        return _ => translate(_) ?? "null";
     }
 }
