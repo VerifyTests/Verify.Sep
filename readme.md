@@ -140,6 +140,7 @@ Index,Customer Id,First Name,Last Name,Company,City,Country,Phone,Dob
 <sup><a href='/src/Tests/Samples.ScrubCsvColumns.verified.csv#L1-L10' title='Snippet source file'>snippet source</a> | <a href='#snippet-Samples.ScrubCsvColumns.verified.csv' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
+
 ### Result
 
 [Samples.VerifyCsv#01.verified.png](/src/Tests/Samples.VerifyCsv%2300.verified.csv):
@@ -147,4 +148,4 @@ Index,Customer Id,First Name,Last Name,Company,City,Country,Phone,Dob
 
 ## Icon
 
-[Pdf](https://thenounproject.com/term/pdf/533502/) designed by [Alfredo](https://thenounproject.com/AlfredoCreates) from [The Noun Project](https://thenounproject.com/).
+[Csv](https://thenounproject.com/icon/csv-5776732/) designed by [iconade](https://thenounproject.com/creator/iconade3/) from [The Noun Project](https://thenounproject.com/).
