@@ -7,7 +7,7 @@
     <LangVersion>preview</LangVersion>
     <SignAssembly>false</SignAssembly>
     <PackageTags>Sep, Verify</PackageTags>
-    <Description>Extends Verify (https://github.com/VerifyTests/Verify) to allow verification of CSV via Sep.</Description>
+    <Description>Extends Verify (https://github.com/VerifyTests/Verify) to allow verification of CSVs via Sep (https://github.com/nietras/Sep).</Description>
     <ResolveAssemblyReferencesSilent>true</ResolveAssemblyReferencesSilent>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
