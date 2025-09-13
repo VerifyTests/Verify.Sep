@@ -37,4 +37,11 @@ public class Samples
     }
 
     #endregion
+
+    [Test]
+    public Task VerifyReader()
+    {
+        using var source = Sep.Reader().FromFile("sample.csv");
+        return Verify(source);
+    }
 }
