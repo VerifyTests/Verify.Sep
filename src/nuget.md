@@ -1,6 +1,6 @@
 [Documentation](https://github.com/VerifyTests/Verify.Sep)
 
-Extends [Verify](https://github.com/VerifyTests/Verify) to allow verification of CSV via [Sep](https://github.com/nietras/Sep).<!-- singleLineInclude: intro. path: /docs/intro.include.md -->
+Extends [Verify](https://github.com/VerifyTests/Verify) to allow verification of CSVs via [Sep](https://github.com/nietras/Sep).<!-- singleLineInclude: intro. path: /docs/intro.include.md -->
 
 **See [Milestones](https://github.com/VerifyTests/Verify.Sep/milestones?state=closed) for release notes.**
 

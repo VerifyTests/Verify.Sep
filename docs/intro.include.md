@@ -1,1 +1,1 @@
-Extends [Verify](https://github.com/VerifyTests/Verify) to allow verification of CSV via [Sep](https://github.com/nietras/Sep).
+Extends [Verify](https://github.com/VerifyTests/Verify) to allow verification of CSVs via [Sep](https://github.com/nietras/Sep).
