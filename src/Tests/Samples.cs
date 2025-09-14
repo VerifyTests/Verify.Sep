@@ -38,10 +38,14 @@ public class Samples
 
     #endregion
 
+    #region VerifyReader
+
     [Test]
     public Task VerifyReader()
     {
-        using var source = Sep.Reader().FromFile("sample.csv");
-        return Verify(source);
+        using var reader = Sep.Reader().FromFile("sample.csv");
+        return Verify(reader);
     }
+
+    #endregion
 }
