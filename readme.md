@@ -75,6 +75,13 @@ public Task VerifyCsv() =>
 <!-- endSnippet -->
 
 
+Results in:
+
+snippet: Samples.VerifyCsv.verified.csv
+
+Note that Guid and date scrubbing is respected.
+
+
 ### Verify a Stream
 
 <!-- snippet: VerifyCsvStream -->
