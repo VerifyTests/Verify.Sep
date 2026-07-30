@@ -1,3 +1,1 @@
-﻿// Global using directives
-
-global using nietras.SeparatedValues;
+﻿global using nietras.SeparatedValues;
